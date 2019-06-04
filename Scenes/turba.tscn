@@ -39,6 +39,7 @@ script = ExtResource( 1 )
 scale = Vector2( 0.75, 0.75 )
 frames = SubResource( 1 )
 animation = "swim"
+frame = 1
 playing = true
 
 [node name="shape" type="CollisionShape2D" parent="."]
