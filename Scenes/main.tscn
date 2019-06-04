@@ -1,0 +1,117 @@
+[gd_scene load_steps=14 format=2]
+
+[ext_resource path="res://Scripts/main.gd" type="Script" id=1]
+[ext_resource path="res://Scenes/turba.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scenes/player.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Scripts/HUD.gd" type="Script" id=4]
+[ext_resource path="res://Fonts/Xolonium-Regular.ttf" type="DynamicFontData" id=5]
+[ext_resource path="res://Sprites/House In a Forest Loop.ogg" type="AudioStream" id=6]
+[ext_resource path="res://Sprites/gameover.wav" type="AudioStream" id=7]
+
+[sub_resource type="Curve2D" id=1]
+_data = {
+"points": PoolVector2Array( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 480, 0, 0, 0, 0, 0, 480, 720, 0, 0, 0, 0, 0, 720, 0, 0, 0, 0, 0, 0 )
+}
+
+[sub_resource type="DynamicFont" id=2]
+size = 64
+font_data = ExtResource( 5 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 64
+font_data = ExtResource( 5 )
+
+[sub_resource type="DynamicFont" id=4]
+size = 64
+font_data = ExtResource( 5 )
+
+[sub_resource type="InputEventAction" id=5]
+action = "ui_select"
+
+[sub_resource type="ShortCut" id=6]
+shortcut = SubResource( 5 )
+
+[node name="main" type="Node"]
+script = ExtResource( 1 )
+Mob = ExtResource( 2 )
+
+[node name="ColorRect" type="ColorRect" parent="."]
+margin_right = 480.0
+margin_bottom = 720.0
+color = Color( 0.411765, 0.160784, 0.866667, 1 )
+
+[node name="player" parent="." instance=ExtResource( 3 )]
+
+[node name="MobTimer" type="Timer" parent="."]
+wait_time = 0.5
+
+[node name="ScoreTimer" type="Timer" parent="."]
+
+[node name="StartTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="StartPosition" type="Position2D" parent="."]
+position = Vector2( 240, 450 )
+
+[node name="caminhoTurba" type="Path2D" parent="."]
+curve = SubResource( 1 )
+
+[node name="LocalGeradorTurba" type="PathFollow2D" parent="caminhoTurba"]
+
+[node name="HUD" type="CanvasLayer" parent="."]
+editor/display_folded = true
+script = ExtResource( 4 )
+
+[node name="score_lb" type="Label" parent="HUD"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -22.5
+margin_right = 22.5
+margin_bottom = 78.0
+custom_fonts/font = SubResource( 2 )
+text = "0"
+
+[node name="message_lb" type="Label" parent="HUD"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -183.0
+margin_top = -104.5
+margin_right = 183.0
+margin_bottom = 104.5
+custom_fonts/font = SubResource( 3 )
+text = "Dodge the 
+Creeps!"
+align = 1
+
+[node name="start_btn" type="Button" parent="HUD"]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -90.0
+margin_top = -200.0
+margin_right = 90.0
+margin_bottom = -60.0
+custom_fonts/font = SubResource( 4 )
+shortcut = SubResource( 6 )
+text = "Start"
+
+[node name="message_timer" type="Timer" parent="HUD"]
+wait_time = 2.0
+one_shot = true
+
+[node name="Musica_fx" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 6 )
+
+[node name="die_fx" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 7 )
+[connection signal="hit" from="player" to="." method="game_over"]
+[connection signal="timeout" from="MobTimer" to="." method="_on_MobTimer_timeout"]
+[connection signal="timeout" from="ScoreTimer" to="." method="_on_ScoreTimer_timeout"]
+[connection signal="timeout" from="StartTimer" to="." method="_on_StartTimer_timeout"]
+[connection signal="start_game" from="HUD" to="." method="new_game"]
+[connection signal="pressed" from="HUD/start_btn" to="HUD" method="_on_start_btn_pressed"]
+[connection signal="timeout" from="HUD/message_timer" to="HUD" method="_on_message_timer_timeout"]
